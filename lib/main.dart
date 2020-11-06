@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:mobileforum/components/imagebutton.dart';
+import 'package:mobileforum/views/home.dart';
+import 'package:mobileforum/views/login.dart';
 import 'package:mobileforum/config.dart';
 
 void main() {
@@ -14,11 +16,46 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Alem Forum',
       theme: ThemeData(
-        appBarTheme: AppBarTheme(color: Color(0xFF16212c)),
+        // Appbar theme
+        appBarTheme: AppBarTheme(color: forumMainColor),
+
+        // Bottom Navigation Bar theme
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: Color(0xFF16212c),
-          selectedItemColor: Colors.white,
+          backgroundColor: forumMainColor,
+          selectedItemColor: forumTextColor,
           unselectedItemColor: Colors.white30,
+        ),
+
+        // Text theme
+        textTheme: TextTheme(
+          headline3: TextStyle(
+            color: Colors.white70,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+          bodyText1: TextStyle(color: forumTextColor, fontSize: 13, height: 1.6, fontWeight: FontWeight.w300),
+          subtitle1: TextStyle(
+            color: Colors.white30,
+            fontSize: 9,
+          ),
+        ),
+
+        // Button theme
+        buttonColor: forumButtonColor,
+        brightness: Brightness.dark,
+        disabledColor: Colors.blue[200],
+
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: forumInputColor,
+          contentPadding: EdgeInsets.all(8),
+          hintStyle: TextStyle(color: Colors.white30, fontSize: 13),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
         ),
       ),
       home: Tabs(),
@@ -33,10 +70,14 @@ class Tabs extends StatefulWidget {
 
 class _TabsState extends State<Tabs> {
   // List of tab views
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text('Index 0: Home'),
-    Text('Index 1: Business'),
-    Text('Index 2: School'),
+  static List<Widget> _widgetOptions = <Widget>[
+    Home(),
+    Login(),
+  ];
+  bool _login = false;
+  List<String> titles = [
+    'Forum',
+    'Войти',
   ];
 
   // Tab selection function
@@ -51,20 +92,32 @@ class _TabsState extends State<Tabs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       // Top App Bar
       appBar: AppBar(
-        title: Text('Forum'),
+        title: Text((_tabIndex == 1 && _login) ? 'Profile' : titles[_tabIndex]),
         elevation: 0,
-        leading: ImageButton(
-          padding: EdgeInsets.only(left: 16),
-          onTap: () {
-            print("press");
-          },
-          image: "$host/avatars/1.jpg",
+        bottom: PreferredSize(
+          child: Container(
+            color: Color(0xFF38444d),
+            height: 1,
+          ),
+          preferredSize: Size.fromHeight(1),
         ),
+        leading: _login
+            ? Padding(
+                padding: const EdgeInsets.only(left: 16, top: 10, bottom: 10),
+                child: ImageButton(
+                  image: "$host/avatars/1.jpg",
+                  onTap: () {
+                    print('My Profile');
+                  },
+                ),
+              )
+            : null,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding: EdgeInsets.only(right: 16),
             child: IconButton(
               icon: Icon(FeatherIcons.filter, color: Colors.white70),
               onPressed: null,
@@ -75,9 +128,11 @@ class _TabsState extends State<Tabs> {
 
       // Body
       body: Container(
-        alignment: Alignment.centerLeft,
         color: Color(0xFF16212c),
-        child: _widgetOptions.elementAt(_tabIndex),
+        child: Container(
+          alignment: Alignment.topLeft,
+          child: _widgetOptions.elementAt(_tabIndex),
+        ),
       ),
 
       // Bottom Navigation Bar

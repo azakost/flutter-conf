@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class ImageButton extends StatelessWidget {
   final String image;
-  final double size;
+  final double size, padding;
   final Function() onTap;
-  final EdgeInsetsGeometry padding;
 
-  ImageButton({this.image, this.size = 32, this.onTap, this.padding});
-
+  ImageButton({this.image, this.size = 39, this.padding = 0, this.onTap});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: Container(
-        padding: padding,
-        alignment: Alignment.center,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(100),
-          child: CachedNetworkImage(
-            imageUrl: image,
-            width: size,
-            height: size,
+      child: Padding(
+        padding: EdgeInsets.all(padding),
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(image),
+            ),
           ),
         ),
       ),
