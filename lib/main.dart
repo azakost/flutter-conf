@@ -4,6 +4,7 @@ import 'package:mobileforum/components/imagebutton.dart';
 import 'package:mobileforum/views/home.dart';
 import 'package:mobileforum/views/login.dart';
 import 'package:mobileforum/config.dart';
+import 'package:mobileforum/views/profile.dart';
 
 void main() {
   runApp(MyApp());
@@ -72,12 +73,37 @@ class _TabsState extends State<Tabs> {
   // List of tab views
   static List<Widget> _widgetOptions = <Widget>[
     Home(),
-    Login(),
+    Container(),
+    Container(),
+    Profile(),
   ];
-  bool _login = false;
+
+  bool _login = true;
+
   List<String> titles = [
     'Forum',
-    'Войти',
+    'Знания',
+    'Уведомления',
+    'Вход в систему',
+  ];
+
+  List<IconButton> _buttons = <IconButton>[
+    IconButton(
+      icon: Icon(FeatherIcons.filter, color: Colors.white70),
+      onPressed: null,
+    ),
+    IconButton(
+      icon: Icon(FeatherIcons.bookmark, color: Colors.white70),
+      onPressed: null,
+    ),
+    IconButton(
+      icon: Icon(FeatherIcons.settings, color: Colors.white70),
+      onPressed: null,
+    ),
+    IconButton(
+      icon: Icon(FeatherIcons.userPlus, color: Colors.white70),
+      onPressed: null,
+    )
   ];
 
   // Tab selection function
@@ -95,7 +121,7 @@ class _TabsState extends State<Tabs> {
       resizeToAvoidBottomInset: false,
       // Top App Bar
       appBar: AppBar(
-        title: Text((_tabIndex == 1 && _login) ? 'Profile' : titles[_tabIndex]),
+        title: Text((_tabIndex == _buttons.length - 1 && _login) ? 'Профиль' : titles[_tabIndex]),
         elevation: 0,
         bottom: PreferredSize(
           child: Container(
@@ -106,7 +132,7 @@ class _TabsState extends State<Tabs> {
         ),
         leading: _login
             ? Padding(
-                padding: const EdgeInsets.only(left: 16, top: 10, bottom: 10),
+                padding: const EdgeInsets.only(left: 16, top: 12, bottom: 12),
                 child: ImageButton(
                   image: "$host/avatars/1.jpg",
                   onTap: () {
@@ -118,10 +144,12 @@ class _TabsState extends State<Tabs> {
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 16),
-            child: IconButton(
-              icon: Icon(FeatherIcons.filter, color: Colors.white70),
-              onPressed: null,
-            ),
+            child: _login && _tabIndex == _buttons.length - 1
+                ? IconButton(
+                    icon: Icon(FeatherIcons.logOut, color: Colors.white70),
+                    onPressed: null,
+                  )
+                : _buttons[_tabIndex],
           ),
         ],
       ),
@@ -131,7 +159,7 @@ class _TabsState extends State<Tabs> {
         color: Color(0xFF16212c),
         child: Container(
           alignment: Alignment.topLeft,
-          child: _widgetOptions.elementAt(_tabIndex),
+          child: !_login && _tabIndex == 1 ? Login() : _widgetOptions.elementAt(_tabIndex),
         ),
       ),
 
@@ -143,12 +171,21 @@ class _TabsState extends State<Tabs> {
         child: BottomNavigationBar(
           onTap: _onTabPressed,
           currentIndex: _tabIndex,
+          type: BottomNavigationBarType.fixed,
           showSelectedLabels: false,
           showUnselectedLabels: false,
           items: [
             BottomNavigationBarItem(
               icon: Icon(FeatherIcons.home),
               label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FeatherIcons.bookOpen),
+              label: 'Knowlege',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FeatherIcons.bell),
+              label: 'Notifications',
             ),
             BottomNavigationBarItem(
               icon: Icon(FeatherIcons.user),

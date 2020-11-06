@@ -67,21 +67,13 @@ class Login extends StatelessWidget {
 
           // Divider
           Container(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              FlatButton.icon(
-                onPressed: () {},
-                label: Text('Регистрация'),
-                icon: Icon(FeatherIcons.userPlus, size: 14),
-              ),
-              FlatButton.icon(
-                onPressed: () {},
-                label: Text('Войти через Git'),
-                icon: Icon(FeatherIcons.github, size: 14),
-              ),
-            ],
+
+          FlatButton.icon(
+            onPressed: () {},
+            label: Text('Войти через GitHub'),
+            icon: Icon(FeatherIcons.github, size: 14),
           ),
+
           Container(height: 32),
         ],
       ),
