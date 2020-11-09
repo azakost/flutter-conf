@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:mobileforum/components/imagebutton.dart';
+
 import 'package:mobileforum/views/home.dart';
-import 'package:mobileforum/views/login.dart';
 import 'package:mobileforum/config.dart';
+import 'package:mobileforum/views/login.dart';
 import 'package:mobileforum/views/profile.dart';
 
 void main() {
@@ -69,48 +69,48 @@ class Tabs extends StatefulWidget {
   _TabsState createState() => _TabsState();
 }
 
+bool logged = false;
+
 class _TabsState extends State<Tabs> {
-  // List of tab views
-  static List<Widget> _widgetOptions = <Widget>[
-    Home(),
-    Container(),
-    Container(),
-    Profile(),
-  ];
-
-  bool _login = true;
-
-  List<String> titles = [
-    'Forum',
-    'Знания',
-    'Уведомления',
-    'Вход в систему',
-  ];
-
-  List<IconButton> _buttons = <IconButton>[
-    IconButton(
-      icon: Icon(FeatherIcons.filter, color: Colors.white70),
-      onPressed: null,
+  // App Bars list
+  List<Bar> tab = [
+    Bar(
+      title: 'Forum',
+      icon: FeatherIcons.filter,
+      onIconTap: null,
+      page: Home(),
     ),
-    IconButton(
-      icon: Icon(FeatherIcons.bookmark, color: Colors.white70),
-      onPressed: null,
+    Bar(
+      title: 'Знания',
+      icon: FeatherIcons.bookmark,
+      onIconTap: null,
+      page: Container(),
     ),
-    IconButton(
-      icon: Icon(FeatherIcons.settings, color: Colors.white70),
-      onPressed: null,
+    Bar(
+      title: 'Уведомления',
+      icon: FeatherIcons.settings,
+      onIconTap: null,
+      page: Container(),
     ),
-    IconButton(
-      icon: Icon(FeatherIcons.userPlus, color: Colors.white70),
-      onPressed: null,
-    )
+    Bar(
+      title: 'Профиль',
+      icon: FeatherIcons.logOut,
+      onIconTap: null,
+      page: Profile(),
+    ),
+    Bar(
+      title: 'Войти в систему',
+      icon: FeatherIcons.userPlus,
+      onIconTap: null,
+      page: Login(),
+    ),
   ];
 
   // Tab selection function
-  int _tabIndex = 0;
+  int _num = 0;
   void _onTabPressed(int index) {
     setState(() {
-      _tabIndex = index;
+      _num = (index == 3 && logged == false) ? 4 : index;
     });
   }
 
@@ -119,37 +119,26 @@ class _TabsState extends State<Tabs> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+
       // Top App Bar
       appBar: AppBar(
-        title: Text((_tabIndex == _buttons.length - 1 && _login) ? 'Профиль' : titles[_tabIndex]),
+        title: Text(tab[_num].title),
         elevation: 0,
         bottom: PreferredSize(
-          child: Container(
-            color: Color(0xFF38444d),
-            height: 1,
-          ),
+          child: Container(color: Color(0xFF38444d), height: 1),
           preferredSize: Size.fromHeight(1),
         ),
-        leading: _login
-            ? Padding(
-                padding: const EdgeInsets.only(left: 16, top: 12, bottom: 12),
-                child: ImageButton(
-                  image: "$host/avatars/1.jpg",
-                  onTap: () {
-                    print('My Profile');
-                  },
-                ),
-              )
-            : null,
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text('Logo'),
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 16),
-            child: _login && _tabIndex == _buttons.length - 1
-                ? IconButton(
-                    icon: Icon(FeatherIcons.logOut, color: Colors.white70),
-                    onPressed: null,
-                  )
-                : _buttons[_tabIndex],
+            child: IconButton(
+              icon: Icon(tab[_num].icon, color: Colors.white70),
+              onPressed: tab[_num].onIconTap,
+            ),
           ),
         ],
       ),
@@ -157,10 +146,7 @@ class _TabsState extends State<Tabs> {
       // Body
       body: Container(
         color: Color(0xFF16212c),
-        child: Container(
-          alignment: Alignment.topLeft,
-          child: !_login && _tabIndex == 1 ? Login() : _widgetOptions.elementAt(_tabIndex),
-        ),
+        child: Container(alignment: Alignment.topLeft, child: tab[_num].page),
       ),
 
       // Bottom Navigation Bar
@@ -170,30 +156,38 @@ class _TabsState extends State<Tabs> {
         ),
         child: BottomNavigationBar(
           onTap: _onTabPressed,
-          currentIndex: _tabIndex,
+          currentIndex: (_num == 4) ? 3 : _num,
           type: BottomNavigationBarType.fixed,
           showSelectedLabels: false,
           showUnselectedLabels: false,
           items: [
             BottomNavigationBarItem(
               icon: Icon(FeatherIcons.home),
-              label: 'Home',
+              label: 'home',
             ),
             BottomNavigationBarItem(
               icon: Icon(FeatherIcons.bookOpen),
-              label: 'Knowlege',
+              label: 'know',
             ),
             BottomNavigationBarItem(
               icon: Icon(FeatherIcons.bell),
-              label: 'Notifications',
+              label: 'notf',
             ),
             BottomNavigationBarItem(
               icon: Icon(FeatherIcons.user),
-              label: 'Profile',
+              label: 'user',
             ),
           ],
         ),
       ),
     );
   }
+}
+
+class Bar {
+  final String title;
+  final IconData icon;
+  final Function() onIconTap;
+  final Widget page;
+  Bar({this.title, this.icon, this.onIconTap, this.page});
 }
